@@ -57,7 +57,23 @@ namespace ECommunicationWebAPI
            name: "SetFilesToEnable",
            routeTemplate: "api/Email/SetFilesToEnable",
            defaults: new { controller = "Email", action = "SetFilesToEnable", id = RouteParameter.Optional });
-                  
+
+            config.Routes.MapHttpRoute(
+            name: "DeleteFiles",
+            routeTemplate: "api/Email/DeleteFiles",
+            defaults: new { controller = "Email", action = "DeleteFiles", id = RouteParameter.Optional });
+
+            config.Routes.MapHttpRoute(
+             name: "GetAllFolder",
+             routeTemplate: "api/Email/GetAllFolder",
+             defaults: new { controller = "Email", action = "GetAllFolder", id = RouteParameter.Optional });
+
+            config.Routes.MapHttpRoute(
+               name: "AddFolder",
+               routeTemplate: "api/Email/AddFolder",
+               defaults: new { controller = "Email", action = "AddFolder", id = RouteParameter.Optional });
+
+
             config.Routes.MapHttpRoute(
                        name: "DefaultApi",
                        routeTemplate: "api/{controller}/{id}",

@@ -89,7 +89,6 @@ namespace ECommunicationDataLibrary.Repository
             {
                 throw;
             }
-            //return dbContext.Database.SqlQuery<Mailboxes>("exec GetMailboxesUserWise(5)").ToList();
         }
         public IList<EmailObject> GetFolderWithDetails(int UserMailboxId)
         {
@@ -196,12 +195,38 @@ namespace ECommunicationDataLibrary.Repository
                     return UserFolderList;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
-
+        public IList<EmailFolder> GetAllFolder()
+        {
+            List<EmailFolder> ListEmailFolder = new List<EmailFolder>();
+            try
+            {
+                var ListFolders = dbContext.Folders.ToList();
+                if (ListFolders != null && ListFolders.Count > 0)
+                {
+                    return ListEmailFolder = ListFolders.Select(x => new EmailFolder
+                    {
+                        FolderId = x.FolderId,
+                        MailboxId = Convert.ToInt64(x.MailboxId),
+                        FolderName = x.FolderName,
+                        TypeId = x.TypeId,
+                        StatusId = x.StatusId
+                    }).ToList();
+                }
+                else
+                {
+                    return ListEmailFolder;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public IList<UserFileList> GetFilesByFolder(int folderId)
         {
             List<UserFileList> ListUserFileList = new List<UserFileList>();
@@ -232,85 +257,175 @@ namespace ECommunicationDataLibrary.Repository
                 throw;
             }
         }
-        public File MoveFilesIntoFolder(long FolderId, File files)
+        public string MoveFilesIntoFolder(long FolderId, List<File> files)
         {
             try
             {
-                if (files == null)
+                if (files != null)
                 {
-                    return null;
-                }
-                else
-                {
-                    var existing = dbContext.Files.FirstOrDefault(x => x.FileId == files.FileId);
-                    existing.FolderId = FolderId;
-                    dbContext.SaveChanges();
 
-                    return files;
-                }
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-        public File SetFilesToDisable(File files)
-        {
-            try
-            {
-                if (files == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    var existing = dbContext.Files.FirstOrDefault(x => x.FileId == files.FileId);
-                    if (existing.StatusId == 1)
+                    foreach (var objfile in files)
                     {
-                        existing.StatusId = 0;
+                        var existing = dbContext.Files.FirstOrDefault(x => x.FileId == objfile.FileId);
+                        existing.FolderId = FolderId;
+                        dbContext.SaveChanges();
                     }
-                    dbContext.SaveChanges();
-
-                    return files;
-                }
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-        public File SetFilesToEnable(File files)
-        {
-            try
-            {
-                if (files == null)
-                {
-                    return null;
+                    return "File has been moved successfully.";
                 }
                 else
                 {
-                    var existing = dbContext.Files.FirstOrDefault(x => x.FileId == files.FileId);
-                    if (existing.StatusId == 0)
+                    return "Internal server error";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public string SetFilesToDisable(List<File> files)
+        {
+            try
+            {
+                if (files != null)
+                {
+                    foreach (var objfile in files)
                     {
-                        existing.StatusId = 1;
+                        var existing = dbContext.Files.FirstOrDefault(x => x.FileId == objfile.FileId);
+                        if (existing.StatusId == 1)
+                        {
+                            existing.StatusId = 0;
+                        }
+                        dbContext.SaveChanges();
                     }
-                    dbContext.SaveChanges();
+                    return "File has been disabled successfully.";
+                }
+                else
+                {
+                    return "Internal server error";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public string SetFilesToEnable(List<File> files)
+        {
+            try
+            {
+                if (files != null)
+                {
 
-                    return files;
+                    foreach (var objfile in files)
+                    {
+                        var existing = dbContext.Files.FirstOrDefault(x => x.FileId == objfile.FileId);
+                        if (existing.StatusId == 0)
+                        {
+                            existing.StatusId = 1;
+                        }
+                        dbContext.SaveChanges();
+                    }
+                    return "File has been enabled successfully.";
+                }
+                else
+                {
+                    return "Internal server error";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string DeleteFiles(List<File> files)
+        {
+            try
+            {
+                if (files != null)
+                {
+                    foreach (var objfile in files)
+                    {
+                        var filesToRemove = dbContext.Files.FirstOrDefault(x => x.FileId == objfile.FileId);
+                        dbContext.Files.Remove(filesToRemove);
+                        dbContext.SaveChanges();
+                    }
+
+                    return "File has been deleted successfully.";
+                }
+                else
+                {
+                    return "Internal server error";
                 }
             }
             catch (Exception)
             {
-                return null;
+
+                throw;
             }
         }
 
-        public File DeleteFiles(int FileId)
+        public string Create(Folder folder)
         {
-            var filesToRemove = dbContext.Files.FirstOrDefault(x => x.FileId == FileId);
-            var files = dbContext.Files.Remove(filesToRemove);
-            dbContext.SaveChanges();
-            return files;
+            try
+            {
+                if (folder != null)
+                {
+                    dbContext.Folders.Add(folder);
+                    dbContext.SaveChanges();
+                }
+                return "Folder has been added successfully";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string Update(Folder folder)
+        {
+            try
+            {
+                if (folder != null)
+                {
+                    var existsfolder = dbContext.Folders.FirstOrDefault(x => x.FolderId == folder.FolderId);
+                    existsfolder.FolderName = folder.FolderName;
+                    existsfolder.StatusId = folder.StatusId;
+                    existsfolder.MailboxId = folder.MailboxId;
+                    existsfolder.TypeId = folder.TypeId;
+                    dbContext.SaveChanges();
+                }
+                return "Folder has been updated successfully";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string Delete(int id)
+        {
+            try
+            {
+                if (id > 0)
+                {
+                    var existsFolder = dbContext.Folders.Where(x => x.FolderId == id).FirstOrDefault();
+                    if (existsFolder != null)
+                    {
+                        dbContext.Folders.Remove(existsFolder);
+                        dbContext.SaveChanges();
+                    }
+                    return "Folder has been deleted successfully";
+                }
+                else
+                {
+                    return "There isn't any folder exists";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

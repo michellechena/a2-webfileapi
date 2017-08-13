@@ -27,6 +27,21 @@ namespace ECommunicationWebAPI.Controllers
         }
 
         [HttpGet]
+        public IHttpActionResult GetAllFolder()
+        {
+            try
+            {
+                var repository = EmailRepository.Instance;
+                var list = repository.GetAllFolder().ToList();
+                return Ok(list);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
         public IHttpActionResult GetAllUserMailboxes()
         {
             try
@@ -83,7 +98,7 @@ namespace ECommunicationWebAPI.Controllers
             }
         }
         [HttpPost]
-        public IHttpActionResult MoveFilesIntoFolder(long FolderId, File Files)
+        public IHttpActionResult MoveFilesIntoFolder(long FolderId, List<File> Files)
         {
             try
             {
@@ -97,7 +112,7 @@ namespace ECommunicationWebAPI.Controllers
             }
         }
         [HttpPost]
-        public IHttpActionResult SetFilesToDisable(long FilesId,File Files)
+        public IHttpActionResult SetFilesToDisable(List<File> Files)
         {
             try
             {
@@ -111,7 +126,7 @@ namespace ECommunicationWebAPI.Controllers
             }
         }
         [HttpPost]
-        public IHttpActionResult SetFilesToEnable(long FilesId, File Files)
+        public IHttpActionResult SetFilesToEnable(List<File> Files)
         {
             try
             {
@@ -124,13 +139,58 @@ namespace ECommunicationWebAPI.Controllers
                 return InternalServerError(ex);
             }
         }
-        [HttpDelete]
-        public IHttpActionResult DeleteFiles(int id)
+        [HttpPost]
+        public IHttpActionResult DeleteFiles(List<File> files)
         {
             try
             {
                 var repository = EmailRepository.Instance;
-                var returnValue = repository.DeleteFiles(id);
+                var returnValue = repository.DeleteFiles(files);
+                return Ok(returnValue);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpPost]
+        public IHttpActionResult AddFolder(Folder folder)
+        {
+            try
+            {
+                var repository = EmailRepository.Instance;
+                var returnValue = repository.Create(folder);
+                return Ok(returnValue);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpPut]
+        public IHttpActionResult UpdateFolder(Folder folder)
+        {
+            try
+            {
+                var repository = EmailRepository.Instance;
+                var returnValue = repository.Update(folder);
+                return Ok(returnValue);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpDelete]
+        public IHttpActionResult DeleteFolder(int id)
+        {
+            try
+            {
+                var repository = EmailRepository.Instance;
+                var returnValue = repository.Delete(id);
                 return Ok(returnValue);
             }
             catch (Exception ex)
