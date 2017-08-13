@@ -218,7 +218,8 @@ namespace ECommunicationDataLibrary.Repository
                         FileName = x.FileName,
                         TypeId = x.TypeId,
                         StatusId = x.StatusId,
-                        IsValid = x.IsValid
+                        IsValid = x.IsValid,
+                        IsSelect = false
                     }).ToList();
                 }
                 else
@@ -267,7 +268,7 @@ namespace ECommunicationDataLibrary.Repository
                     if (existing.StatusId == 1)
                     {
                         existing.StatusId = 0;
-                    }                    
+                    }
                     dbContext.SaveChanges();
 
                     return files;

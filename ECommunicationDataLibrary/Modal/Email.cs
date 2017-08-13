@@ -65,6 +65,7 @@
         public int TypeId { get; set; }
         public int StatusId { get; set; }
         public bool IsValid { get; set; }
+        public bool IsSelect { get; set; }
     }
     public class UserFolderList
     {
