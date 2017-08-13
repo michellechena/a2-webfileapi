@@ -196,9 +196,9 @@ namespace ECommunicationDataLibrary.Repository
                     return UserFolderList;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
