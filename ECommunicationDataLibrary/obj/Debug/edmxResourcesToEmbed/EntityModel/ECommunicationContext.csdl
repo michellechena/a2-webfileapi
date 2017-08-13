@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ECommunicationModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="File">
+    <Key>
+      <PropertyRef Name="FileId" />
+    </Key>
+    <Property Name="FileId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FilePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="FileName" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+    <Property Name="TypeId" Type="Byte" Nullable="false" />
+    <Property Name="FolderId" Type="Int64" />
+    <Property Name="StatusId" Type="Byte" Nullable="false" />
+    <Property Name="IsValid" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Mailbox">
+    <Key>
+      <PropertyRef Name="MailboxId" />
+    </Key>
+    <Property Name="MailboxId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ShortName" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+    <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="StatusId" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Status">
+    <Key>
+      <PropertyRef Name="StatusId" />
+    </Key>
+    <Property Name="StatusId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StatusType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityContainer Name="ECommunicationEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Files" EntityType="Self.File" />
+    <EntitySet Name="Mailboxes" EntityType="Self.Mailbox" />
+    <EntitySet Name="Status" EntityType="Self.Status" />
+    <EntitySet Name="Folders" EntityType="ECommunicationModel.Folder" />
+    <EntitySet Name="UserMailboxes" EntityType="ECommunicationModel.UserMailbox" />
+    <EntitySet Name="Users" EntityType="ECommunicationModel.User" />
+  </EntityContainer>
+  <EntityType Name="Folder">
+    <Key>
+      <PropertyRef Name="FolderId" />
+    </Key>
+    <Property Name="FolderId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserMailboxId" Type="Int64" />
+    <Property Name="MailboxId" Type="Int64" />
+    <Property Name="TypeId" Type="Byte" Nullable="false" />
+    <Property Name="StatusId" Type="Byte" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserMailbox">
+    <Key>
+      <PropertyRef Name="UserMailboxId" />
+    </Key>
+    <Property Name="UserMailboxId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int64" Nullable="false" />
+    <Property Name="IsMainContact" Type="Boolean" Nullable="false" />
+    <Property Name="IsDefaultMailbox" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+</Schema>

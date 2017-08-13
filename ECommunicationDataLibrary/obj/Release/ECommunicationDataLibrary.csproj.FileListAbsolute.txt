@@ -1,0 +1,9 @@
+E:\Working\Projects\ECommunicationWebAPI\ECommunicationDataLibrary\bin\Release\ECommunicationDataLibrary.dll.config
+E:\Working\Projects\ECommunicationWebAPI\ECommunicationDataLibrary\bin\Release\ECommunicationDataLibrary.dll
+E:\Working\Projects\ECommunicationWebAPI\ECommunicationDataLibrary\bin\Release\ECommunicationDataLibrary.pdb
+E:\Working\Projects\ECommunicationWebAPI\ECommunicationDataLibrary\bin\Release\EntityFramework.dll
+E:\Working\Projects\ECommunicationWebAPI\ECommunicationDataLibrary\bin\Release\EntityFramework.SqlServer.dll
+E:\Working\Projects\ECommunicationWebAPI\ECommunicationDataLibrary\bin\Release\EntityFramework.xml
+E:\Working\Projects\ECommunicationWebAPI\ECommunicationDataLibrary\bin\Release\EntityFramework.SqlServer.xml
+E:\Working\Projects\ECommunicationWebAPI\ECommunicationDataLibrary\obj\Release\ECommunicationDataLibrary.dll
+E:\Working\Projects\ECommunicationWebAPI\ECommunicationDataLibrary\obj\Release\ECommunicationDataLibrary.pdb
