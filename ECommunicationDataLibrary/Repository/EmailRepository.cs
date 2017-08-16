@@ -69,9 +69,13 @@ namespace ECommunicationDataLibrary.Repository
             try
             {
                 var ListFolders = dbContext.Folders.Where(x => x.MailboxId == UserMailboxId).ToList();
-                if (ListFolders != null && ListFolders.Count > 0)
+                var FirstPositionRecord = ListFolders.Where(x => x.TypeId == 0).Take(1).ToList();
+                var SecondPositionRecord = ListFolders.Where(x => x.TypeId == 0).Skip(1).ToList();
+                var ThirdPositionRecord = ListFolders.Where(x => x.TypeId == 1).OrderBy(x => x.FolderName).ToList();
+                var NewListFolders = FirstPositionRecord.Concat(SecondPositionRecord).Concat(ThirdPositionRecord).ToList();
+                if (NewListFolders != null && ListFolders.Count > 0)
                 {
-                    return ListEmailFolder = ListFolders.AsEnumerable().Select(x => new EmailFolder
+                    return ListEmailFolder = NewListFolders.AsEnumerable().Select(x => new EmailFolder
                     {
                         FolderId = x.FolderId,
                         MailboxId = Convert.ToInt64(x.MailboxId),
@@ -166,16 +170,25 @@ namespace ECommunicationDataLibrary.Repository
             }
             return EmailObjectList;
         }
-        public IList<UserEmailFolderList> GetUserFolder(int UserMailboxId)
+        public IList<UserEmailFolderList> GetUserFolder(int UserMailboxId, string searchUserFolder)
         {
             try
             {
                 List<UserEmailFolderList> UserFolderList = new List<UserEmailFolderList>();
                 UserEmailFolderList objUserfolder;
                 var ListFolderDetails = dbContext.Folders.Where(x => x.MailboxId == UserMailboxId).ToList();
-                if (ListFolderDetails != null && ListFolderDetails.Count > 0)
+                if (!String.IsNullOrEmpty(searchUserFolder))
                 {
-                    foreach (var objfolder in ListFolderDetails)
+                    ListFolderDetails = ListFolderDetails.Where(x => x.FolderName.ToLower().Contains(searchUserFolder.ToLower())).ToList();
+                }
+
+                var FirstPositionRecord = ListFolderDetails.Where(x => x.TypeId == 0).Take(1).ToList();
+                var SecondPositionRecord = ListFolderDetails.Where(x => x.TypeId == 0).Skip(1).ToList();
+                var ThirdPositionRecord = ListFolderDetails.Where(x => x.TypeId == 1).OrderBy(x => x.FolderName).ToList();
+                var NewListFolders = FirstPositionRecord.Concat(SecondPositionRecord).Concat(ThirdPositionRecord).ToList();
+                if (NewListFolders != null && NewListFolders.Count > 0)
+                {
+                    foreach (var objfolder in NewListFolders)
                     {
                         objUserfolder = new UserEmailFolderList();
                         objUserfolder.FolderId = objfolder.FolderId;
@@ -229,6 +242,38 @@ namespace ECommunicationDataLibrary.Repository
         }
         public IList<UserFileList> GetFilesByFolder(int folderId)
         {
+            List<UserFileList> ListUserFileList = new List<UserFileList>();
+            try
+            {
+                var ListFiles = dbContext.Files.Where(x => x.FolderId == folderId).ToList();
+                if (ListFiles != null && ListFiles.Count > 0)
+                {
+                    return ListUserFileList = ListFiles.AsEnumerable().Select(x => new UserFileList
+                    {
+                        FileId = x.FileId,
+                        FolderId = x.FolderId,
+                        FilePath = x.FilePath,
+                        FileName = x.FileName,
+                        TypeId = x.TypeId,
+                        StatusId = x.StatusId,
+                        IsValid = x.IsValid,
+                        IsSelect = false
+                    }).ToList();
+                }
+                else
+                {
+                    return ListUserFileList;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public IList<UserFileList> GetFilesByFolderWithPaging(int folderId)
+        {
+            Dictionary<string, object> res = new Dictionary<string, object>();
             List<UserFileList> ListUserFileList = new List<UserFileList>();
             try
             {

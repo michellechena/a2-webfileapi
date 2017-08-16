@@ -84,12 +84,12 @@ namespace ECommunicationWebAPI.Controllers
             }
         }
         [HttpGet]
-        public IHttpActionResult GetUserFolder(int UserMailboxId)
+        public IHttpActionResult GetUserFolder(int UserMailboxId, string searchUserFolder)
         {
             try
             {
                 var repository = EmailRepository.Instance;
-                var list = repository.GetUserFolder(UserMailboxId).ToList();
+                var list = repository.GetUserFolder(UserMailboxId, searchUserFolder).ToList();
                 return Ok(list);
             }
             catch (Exception ex)
