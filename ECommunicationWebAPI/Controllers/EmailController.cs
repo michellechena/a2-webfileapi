@@ -11,6 +11,7 @@ namespace ECommunicationWebAPI.Controllers
 {
     public class EmailController : ApiController
     {
+        #region Get Method
         [HttpGet]
         public IHttpActionResult GetFolderWithDetails(int UserMailboxId)
         {
@@ -70,12 +71,12 @@ namespace ECommunicationWebAPI.Controllers
             }
         }
         [HttpGet]
-        public IHttpActionResult GetFilesByFolder(int folderId)
+        public IHttpActionResult GetFilesByFolder(int folderId, string SearchUserFiles)
         {
             try
             {
                 var repository = EmailRepository.Instance;
-                var list = repository.GetFilesByFolder(folderId).ToList();
+                var list = repository.GetFilesByFolder(folderId, SearchUserFiles).ToList();
                 return Ok(list);
             }
             catch (Exception ex)
@@ -97,20 +98,10 @@ namespace ECommunicationWebAPI.Controllers
                 return InternalServerError(ex);
             }
         }
-        [HttpPost]
-        public IHttpActionResult MoveFilesIntoFolder(long FolderId, List<File> Files)
-        {
-            try
-            {
-                var repository = EmailRepository.Instance;
-                var returnValue = repository.MoveFilesIntoFolder(FolderId, Files);
-                return Ok(returnValue);
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
-        }
+
+        #endregion
+
+        #region Move/Enable/Disable Files
         [HttpPost]
         public IHttpActionResult SetFilesToDisable(List<File> Files)
         {
@@ -140,12 +131,12 @@ namespace ECommunicationWebAPI.Controllers
             }
         }
         [HttpPost]
-        public IHttpActionResult DeleteFiles(List<File> files)
+        public IHttpActionResult MoveFilesIntoFolder(long FolderId, List<File> Files)
         {
             try
             {
                 var repository = EmailRepository.Instance;
-                var returnValue = repository.DeleteFiles(files);
+                var returnValue = repository.MoveFilesIntoFolder(FolderId, Files);
                 return Ok(returnValue);
             }
             catch (Exception ex)
@@ -154,6 +145,9 @@ namespace ECommunicationWebAPI.Controllers
             }
         }
 
+        #endregion
+
+        #region Add/Edit/DELETE Folder
         [HttpPost]
         public IHttpActionResult AddFolder(Folder folder)
         {
@@ -198,5 +192,53 @@ namespace ECommunicationWebAPI.Controllers
                 return InternalServerError(ex);
             }
         }
+        #endregion
+
+        #region Add/Edit/DELETE Files
+        [HttpPost]
+        public IHttpActionResult AddFiles(File files)
+        {
+            try
+            {
+                var repository = EmailRepository.Instance;
+                var returnValue = repository.CreateFiles(files);
+                return Ok(returnValue);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpPost]
+        public IHttpActionResult UpdateFiles(File files)
+        {
+            try
+            {
+                var repository = EmailRepository.Instance;
+                var returnValue = repository.UpdateFiles(files);
+                return Ok(returnValue);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+        [HttpPost]
+        public IHttpActionResult DeleteFiles(List<File> files)
+        {
+            try
+            {
+                var repository = EmailRepository.Instance;
+                var returnValue = repository.DeleteFiles(files);
+                return Ok(returnValue);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        #endregion
     }
 }

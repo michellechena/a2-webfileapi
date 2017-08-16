@@ -172,9 +172,9 @@ namespace ECommunicationDataLibrary.Repository
         }
         public IList<UserEmailFolderList> GetUserFolder(int UserMailboxId, string searchUserFolder)
         {
+            List<UserEmailFolderList> UserFolderList = new List<UserEmailFolderList>();
             try
             {
-                List<UserEmailFolderList> UserFolderList = new List<UserEmailFolderList>();
                 UserEmailFolderList objUserfolder;
                 var ListFolderDetails = dbContext.Folders.Where(x => x.MailboxId == UserMailboxId).ToList();
                 if (!String.IsNullOrEmpty(searchUserFolder))
@@ -208,9 +208,9 @@ namespace ECommunicationDataLibrary.Repository
                     return UserFolderList;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                return null;
             }
         }
         public IList<EmailFolder> GetAllFolder()
@@ -240,12 +240,16 @@ namespace ECommunicationDataLibrary.Repository
                 throw;
             }
         }
-        public IList<UserFileList> GetFilesByFolder(int folderId)
+        public IList<UserFileList> GetFilesByFolder(int folderId, string SearchUserFiles)
         {
             List<UserFileList> ListUserFileList = new List<UserFileList>();
             try
             {
                 var ListFiles = dbContext.Files.Where(x => x.FolderId == folderId).ToList();
+                if (!String.IsNullOrEmpty(SearchUserFiles))
+                {
+                    ListFiles = ListFiles.Where(x => x.FileName.ToLower().Contains(SearchUserFiles.ToLower())).ToList();
+                }
                 if (ListFiles != null && ListFiles.Count > 0)
                 {
                     return ListUserFileList = ListFiles.AsEnumerable().Select(x => new UserFileList
@@ -466,6 +470,46 @@ namespace ECommunicationDataLibrary.Repository
                 {
                     return "There isn't any folder exists";
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string CreateFiles(File files)
+        {
+            try
+            {
+                if (files != null)
+                {
+                    dbContext.Files.Add(files);
+                    dbContext.SaveChanges();
+                }
+                long id = files.FileId;
+                return "File has been added successfully";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public string UpdateFiles(File files)
+        {
+            try
+            {
+                if (files != null)
+                {
+                    var existsfolder = dbContext.Files.FirstOrDefault(x => x.FileId == files.FileId);
+                    existsfolder.FolderId = files.FolderId;
+                    existsfolder.FileName = files.FileName;
+                    existsfolder.FilePath = files.FilePath;
+                    existsfolder.StatusId = files.StatusId;
+                    existsfolder.TypeId = files.TypeId;
+                    existsfolder.IsValid = files.IsValid;
+                    dbContext.SaveChanges();
+                }
+                return "File has been updated successfully";
             }
             catch (Exception ex)
             {
